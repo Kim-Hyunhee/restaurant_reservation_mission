@@ -8,6 +8,15 @@ export const setupSwagger = (app: INestApplication) => {
     .setDescription('API DOCUMENTATION FOR RESTAURANT RESERVATION SERVICES')
     .setVersion('1.0')
     .addTag('api')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        in: 'header',
+        name: 'JWT',
+      },
+      'JWT',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

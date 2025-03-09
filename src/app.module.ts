@@ -2,7 +2,8 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { Feature2Module } from './feature2/feature2.module';
+import { MenuModule } from './menu/menu.module';
+import { RestaurantModule } from './restaurant/restaurant.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from './util/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -14,7 +15,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       envFilePath: '.env', // 환경 변수 파일 경로 설정
     }),
     AuthModule,
-    Feature2Module,
+    MenuModule,
+    RestaurantModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
