@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Menu, MenuCategory } from 'src/entity/table3.entity';
 import { RestaurantService } from 'src/restaurant/restaurant.service';
+import { EXCEPTIONS } from 'src/util/responses';
 import { LessThanOrEqual, Like, MoreThanOrEqual, Repository } from 'typeorm';
 
 @Injectable()
@@ -30,7 +31,7 @@ export class MenuService {
     });
 
     await this.menuRepository.save({
-      restaurantId,
+      restaurant: { id: restaurantId },
       name,
       price,
       category,
@@ -78,5 +79,25 @@ export class MenuService {
     return await this.menuRepository.find({
       where: whereConditions,
     });
+  }
+
+  async removeMenu({ restaurantId, id }: { restaurantId: number; id: number }) {
+    // 해당 메뉴가 있는지 확인
+    await this.findMenu({ restaurantId, id });
+
+    await this.menuRepository.delete({ id });
+
+    return { message: '메뉴가 성공적으로 삭제되었습니다.' };
+  }
+
+  async findMenu({ restaurantId, id }: { restaurantId: number; id: number }) {
+    const menu = await this.menuRepository.findOne({
+      where: { id, restaurant: { id: restaurantId } },
+    });
+    if (!menu) {
+      throw EXCEPTIONS.entityNotFound('Menu');
+    }
+
+    return menu;
   }
 }

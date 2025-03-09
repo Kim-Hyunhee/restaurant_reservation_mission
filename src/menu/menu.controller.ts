@@ -1,7 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  Param,
+  ParseIntPipe,
   Post,
   Query,
   Request,
@@ -48,5 +51,12 @@ export class MenuController {
       maxPrice,
       restaurantId,
     });
+  }
+
+  @Delete(':id')
+  async deleteMenu(@Param('id', ParseIntPipe) id: number, @Request() req) {
+    const restaurantId = req.user.sub;
+
+    return await this.menuService.removeMenu({ restaurantId, id });
   }
 }
