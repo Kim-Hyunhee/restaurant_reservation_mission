@@ -7,7 +7,7 @@ export class Restaurant {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column()
   username: string; // 로그인 ID
 
   @Column()

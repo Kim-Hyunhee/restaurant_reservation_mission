@@ -21,10 +21,14 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
+
+    // ✅ `linebreak-style`을 `rules` 내부로 이동
+    'linebreak-style': [
+      'error',
+      require('os').EOL === '\r\n' ? 'windows' : 'unix',
+    ],
+
+    // ✅ Prettier 설정 유지 (자동 줄바꿈 감지)
+    'prettier/prettier': ['error', { endOfLine: 'auto' }],
   },
-  'linebreak-style': [
-    'error',
-    require('os').EOL === '\r\n' ? 'windows' : 'unix',
-  ],
-  'prettier/prettier': ['error', { endOfLine: 'auto' }],
 };
