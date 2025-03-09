@@ -7,3 +7,9 @@ export class MenuForm {
   category: MenuCategory;
   description: string;
 }
+
+export class GetMenuForm {
+  name?: string;
+  minPrice?: number;
+  maxPrice?: number;
+}

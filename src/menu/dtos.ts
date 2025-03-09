@@ -1,7 +1,14 @@
 // 해당 도메인의 DTO 관리
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { MenuCategory } from 'src/entity/table3.entity';
+import { Type } from 'class-transformer';
 
 export class MenuDto {
   @IsString()
@@ -21,7 +28,7 @@ export class MenuDto {
   price: number;
 
   @IsNotEmpty()
-  @IsString()
+  @IsEnum(MenuCategory)
   @ApiProperty({
     description: '메뉴 카테고리',
     enum: ['한식', '중식', '일식', '양식'],
@@ -36,4 +43,36 @@ export class MenuDto {
     required: false,
   })
   description: string;
+}
+
+export class GetMenuDto {
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    description: '메뉴 이름',
+    example: '맛있는 메뉴',
+    required: false,
+  })
+  name?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @Type(() => Number)
+  @ApiProperty({
+    description: '최소 가격',
+    example: '20000',
+    required: false,
+  })
+  minPrice?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Type(() => Number)
+  @ApiProperty({
+    description: '최대 가격',
+    example: '1000000',
+    required: false,
+    type: Number,
+  })
+  maxPrice?: number;
 }

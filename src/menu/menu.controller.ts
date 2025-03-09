@@ -1,7 +1,15 @@
-import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { MenuService } from './menu.service';
-import { MenuDto } from './dtos';
-import { MenuForm } from './forms';
+import { GetMenuDto, MenuDto } from './dtos';
+import { GetMenuForm, MenuForm } from './forms';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
 
@@ -26,5 +34,19 @@ export class MenuController {
     });
 
     return { message: '메뉴가 성공적으로 등록 되었습니다.' };
+  }
+
+  @Get()
+  async getManyMenu(@Query() query: GetMenuDto, @Request() req) {
+    const restaurantId = req.user.sub;
+
+    const { name, minPrice, maxPrice }: GetMenuForm = query;
+
+    return await this.menuService.findManyMenu({
+      name,
+      minPrice,
+      maxPrice,
+      restaurantId,
+    });
   }
 }

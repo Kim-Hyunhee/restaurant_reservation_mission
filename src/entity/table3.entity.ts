@@ -16,7 +16,7 @@ export class Menu {
   @Column()
   name: string; // 메뉴 이름
 
-  @Column('decimal', { precision: 10, scale: 2 })
+  @Column()
   price: number; // 가격
 
   @Column({ type: 'enum', enum: MenuCategory })
