@@ -24,4 +24,16 @@ export const EXCEPTIONS = {
   entityNotFound: (entity: string) =>
     new NotFoundException(RESPONSE_MESSAGES.entityNotFound(entity)),
   forbidden: new ForbiddenException('접근이 금지되었습니다.'),
+  // 날짜가 유효하지 않을 경우 던질 예외
+  invalidDate: (message: string) => {
+    const error = new Error(message);
+    error.name = 'InvalidDateException'; // 예외 이름
+    return error;
+  },
+  // 시간 검증 실패 시 던질 예외
+  invalidTime: (message: string) => {
+    const error = new Error(message);
+    error.name = 'InvalidTimeException'; // 예외 이름
+    return error;
+  },
 };

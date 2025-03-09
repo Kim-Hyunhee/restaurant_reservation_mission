@@ -3,7 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Menu, MenuCategory } from 'src/entity/table3.entity';
 import { RestaurantService } from 'src/restaurant/restaurant.service';
 import { EXCEPTIONS } from 'src/util/responses';
-import { LessThanOrEqual, Like, MoreThanOrEqual, Repository } from 'typeorm';
+import {
+  In,
+  LessThanOrEqual,
+  Like,
+  MoreThanOrEqual,
+  Repository,
+} from 'typeorm';
 
 @Injectable()
 export class MenuService {
@@ -99,5 +105,11 @@ export class MenuService {
     }
 
     return menu;
+  }
+
+  async findMenuById({ menu }: { menu: number[] }) {
+    return await this.menuRepository.find({
+      where: { id: In(menu) },
+    });
   }
 }

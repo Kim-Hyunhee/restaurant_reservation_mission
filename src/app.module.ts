@@ -7,6 +7,7 @@ import { RestaurantModule } from './restaurant/restaurant.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from './util/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ReservationModule } from './reservation/reservation.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     AuthModule,
     MenuModule,
     RestaurantModule,
+    ReservationModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

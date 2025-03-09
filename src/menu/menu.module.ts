@@ -16,5 +16,6 @@ import { JwtModule } from '@nestjs/jwt';
   ],
   controllers: [MenuController],
   providers: [MenuService],
+  exports: [MenuService],
 })
 export class MenuModule {}
