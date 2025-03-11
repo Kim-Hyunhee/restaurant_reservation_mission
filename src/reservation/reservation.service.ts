@@ -6,8 +6,10 @@ import { RestaurantService } from 'src/restaurant/restaurant.service';
 import { EXCEPTIONS } from 'src/util/responses';
 import { validateDateTime } from 'src/util/valider';
 import {
+  FindOptionsWhere,
   LessThan,
   LessThanOrEqual,
+  Like,
   MoreThan,
   MoreThanOrEqual,
   Repository,
@@ -84,7 +86,7 @@ export class ReservationService {
     return { message: '예약이 성공적으로 등록 되었습니다.' };
   }
 
-  async validateMenus(menuIds: number[], restaurantId: number) {
+  private async validateMenus(menuIds: number[], restaurantId: number) {
     const menuPromises = menuIds.map(async (menuId) => {
       await this.menuService.findMenu({ restaurantId, id: menuId });
     });
@@ -94,5 +96,75 @@ export class ReservationService {
     } catch (error) {
       throw new BadRequestException('하나 이상의 메뉴가 유효하지 않습니다');
     }
+  }
+
+  async fetchManyReservation({
+    customerId,
+    phone,
+    date,
+    minGuest,
+    menu,
+    restaurantId,
+  }: {
+    customerId?: number;
+    phone?: string;
+    date?: string;
+    minGuest?: number;
+    menu?: number;
+    restaurantId?: number;
+  }) {
+    const whereCondition: FindOptionsWhere<Reservation> = {};
+
+    if (customerId) whereCondition.customer = { id: customerId };
+    if (restaurantId) whereCondition.restaurant = { id: restaurantId };
+
+    // 전화번호 일부 검색 (LIKE 사용)
+    if (phone) {
+      whereCondition.phone = Like(`%${phone}%`);
+    }
+
+    // 예약 날짜 검색
+    if (date) {
+      whereCondition.date = date;
+    }
+
+    // 최소 인원수 검색
+    if (minGuest) {
+      whereCondition.guests = MoreThanOrEqual(minGuest);
+    }
+
+    // 특정 메뉴가 포함된 예약 검색
+    if (menu) {
+      whereCondition.menus = { id: menu };
+    }
+
+    let query = this.reservationRepository
+      .createQueryBuilder('reservation')
+      .leftJoinAndSelect('reservation.menus', 'menu')
+      .leftJoinAndSelect('reservation.restaurant', 'restaurant')
+      .leftJoinAndSelect('reservation.customer', 'customer')
+      .where(whereCondition);
+
+    if (menu) {
+      query = query.andWhere('menu.id = :menuId', { menuId: menu });
+    }
+
+    const reservations = await query
+      .select([
+        'reservation.id',
+        'reservation.date',
+        'reservation.startTime',
+        'reservation.endTime',
+        'reservation.guests',
+        'restaurant.id',
+        'customer.id',
+        'menu.id',
+        'menu.name',
+        'menu.category',
+        'menu.description',
+      ])
+      .getMany();
+
+    return reservations;
   }
 }

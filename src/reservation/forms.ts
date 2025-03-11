@@ -7,3 +7,10 @@ export class CreateReservationForm {
   guests: number;
   menu: number[];
 }
+
+export class FetchReservationForm {
+  phone?: string;
+  date?: string;
+  minGuest?: number;
+  menu?: number;
+}

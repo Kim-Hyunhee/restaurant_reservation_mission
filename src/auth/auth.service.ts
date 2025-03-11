@@ -41,7 +41,11 @@ export class AuthService {
     if (!isMatch) {
       throw EXCEPTIONS.unauthorized;
     }
-    const payload = { sub: restaurant.id, username: restaurant.username };
+    const payload = {
+      sub: restaurant.id,
+      username: restaurant.username,
+      role: 'restaurant',
+    };
 
     return {
       access_token: await generateJwtToken(
@@ -74,7 +78,11 @@ export class AuthService {
     if (!isMatch) {
       throw EXCEPTIONS.unauthorized;
     }
-    const payload = { sub: customer.id, username: customer.username };
+    const payload = {
+      sub: customer.id,
+      username: customer.username,
+      role: 'customer',
+    };
 
     return {
       access_token: await generateJwtToken(

@@ -1,11 +1,13 @@
 // 해당 도메인의 DTO 관리
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsArray,
   IsDateString,
   IsInt,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   Matches,
 } from 'class-validator';
@@ -76,4 +78,44 @@ export class CreateReservationDto {
     example: [1, 2, 3],
   })
   menu: number[];
+}
+
+export class FetchReservationDto {
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    description: '예약자 휴대폰 번호',
+    example: '010-7777-7777',
+    required: false,
+  })
+  phone: string;
+
+  @IsOptional()
+  @IsDateString()
+  @ApiProperty({
+    description: '예약 날짜',
+    example: 'YYYY-MM-DD',
+    required: false,
+  })
+  date: string;
+
+  @IsNumber()
+  @Type(() => Number)
+  @IsOptional()
+  @ApiProperty({
+    description: '최소 인원',
+    example: 3,
+    required: false,
+  })
+  minGuest: number;
+
+  @IsNumber()
+  @Type(() => Number)
+  @IsOptional()
+  @ApiProperty({
+    description: '메뉴',
+    example: 1,
+    required: false,
+  })
+  menu: number;
 }

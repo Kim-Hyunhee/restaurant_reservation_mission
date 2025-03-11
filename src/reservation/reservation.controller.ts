@@ -1,9 +1,17 @@
-import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { ReservationService } from './reservation.service';
-import { CreateReservationDto } from './dtos';
-import { CreateReservationForm } from './forms';
+import { CreateReservationDto, FetchReservationDto } from './dtos';
+import { CreateReservationForm, FetchReservationForm } from './forms';
 
 @Controller('reservation')
 @ApiTags('reservation')
@@ -34,6 +42,27 @@ export class ReservationController {
       phone,
       guests,
       menu,
+    });
+  }
+
+  @Get()
+  async getManyReservation(
+    @Query() query: FetchReservationDto,
+    @Request() req,
+  ) {
+    const customerId = req.user.role === 'customer' ? req.user.sub : undefined;
+    const restaurantId =
+      req.user.role === 'restaurant' ? req.user.sub : undefined;
+
+    const { phone, date, minGuest, menu }: FetchReservationForm = query;
+
+    return await this.reservationService.fetchManyReservation({
+      customerId,
+      phone,
+      date,
+      minGuest,
+      menu,
+      restaurantId,
     });
   }
 }
