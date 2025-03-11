@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -91,6 +92,19 @@ export class ReservationController {
       customerId,
       guests,
       menu,
+    });
+  }
+
+  @Delete(':id')
+  async deleteReservation(
+    @Param('id', ParseIntPipe) id: number,
+    @Request() req,
+  ) {
+    const customerId = req.user.sub;
+
+    return await this.reservationService.removeReservation({
+      id,
+      customerId,
     });
   }
 }

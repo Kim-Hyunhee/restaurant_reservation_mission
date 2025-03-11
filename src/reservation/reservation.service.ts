@@ -225,4 +225,19 @@ export class ReservationService {
 
     return reservation;
   }
+
+  async removeReservation({
+    id,
+    customerId,
+  }: {
+    id: number;
+    customerId: number;
+  }) {
+    // 예약 조회 (없으면 예외 발생)
+    await this.fetchReservation({ id, customerId });
+
+    await this.reservationRepository.delete({ id });
+
+    return { message: '예약이 성공적으로 취소되었습니다.' };
+  }
 }
