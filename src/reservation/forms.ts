@@ -14,3 +14,8 @@ export class FetchReservationForm {
   minGuest?: number;
   menu?: number;
 }
+
+export class ModifyReservationForm {
+  guests?: number;
+  menu?: number[];
+}

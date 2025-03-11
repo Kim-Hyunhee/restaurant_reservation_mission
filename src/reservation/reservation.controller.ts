@@ -2,7 +2,10 @@ import {
   Body,
   Controller,
   Get,
+  Param,
+  ParseIntPipe,
   Post,
+  Put,
   Query,
   Request,
   UseGuards,
@@ -10,8 +13,16 @@ import {
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { ReservationService } from './reservation.service';
-import { CreateReservationDto, FetchReservationDto } from './dtos';
-import { CreateReservationForm, FetchReservationForm } from './forms';
+import {
+  CreateReservationDto,
+  FetchReservationDto,
+  ModifyReservationDto,
+} from './dtos';
+import {
+  CreateReservationForm,
+  FetchReservationForm,
+  ModifyReservationForm,
+} from './forms';
 
 @Controller('reservation')
 @ApiTags('reservation')
@@ -63,6 +74,23 @@ export class ReservationController {
       minGuest,
       menu,
       restaurantId,
+    });
+  }
+
+  @Put(':id')
+  async putReservation(
+    @Param('id', ParseIntPipe) id: number,
+    @Request() req,
+    @Body() query: ModifyReservationDto,
+  ) {
+    const customerId = req.user.sub;
+    const { guests, menu }: ModifyReservationForm = query;
+
+    return await this.reservationService.modifyReservation({
+      id,
+      customerId,
+      guests,
+      menu,
     });
   }
 }

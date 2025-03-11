@@ -119,3 +119,25 @@ export class FetchReservationDto {
   })
   menu: number;
 }
+
+export class ModifyReservationDto {
+  @IsNumber()
+  @Type(() => Number)
+  @IsOptional()
+  @ApiProperty({
+    description: '예약 인원',
+    example: 3,
+    required: false,
+  })
+  guests: number;
+
+  @IsArray()
+  @IsOptional()
+  @IsInt({ each: true })
+  @ApiProperty({
+    description: '메뉴',
+    example: [1, 2, 3],
+    required: false,
+  })
+  menu: number[];
+}

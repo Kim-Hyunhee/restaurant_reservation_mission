@@ -1,5 +1,11 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Menu } from 'src/entity/table3.entity';
 import { Reservation } from 'src/entity/table4.entity';
 import { MenuService } from 'src/menu/menu.service';
 import { RestaurantService } from 'src/restaurant/restaurant.service';
@@ -166,5 +172,57 @@ export class ReservationService {
       .getMany();
 
     return reservations;
+  }
+
+  async modifyReservation({
+    id,
+    customerId,
+    guests,
+    menu,
+  }: {
+    id: number;
+    customerId: number;
+    guests?: number;
+    menu?: number[];
+  }) {
+    // 예약 조회 (없으면 예외 발생)
+    const reservation = await this.fetchReservation({ id, customerId });
+
+    let menusToUpdate: Menu[] | undefined;
+
+    // 새로운 메뉴가 있을 경우 업데이트할 메뉴 가져오기
+    if (menu) {
+      await this.validateMenus(menu, reservation.restaurant.id);
+      menusToUpdate = await this.menuService.findMenuById({ menu });
+    }
+
+    // 기존 예약 정보 업데이트
+    reservation.guests = guests ?? reservation.guests;
+    if (menusToUpdate) {
+      reservation.menus = menusToUpdate;
+    }
+
+    // `save()` 사용하여 업데이트 반영 (ManyToMany 관계도 자동 처리됨)
+    await this.reservationRepository.save(reservation);
+
+    return { message: '예약이 성공적으로 수정되었습니다.' };
+  }
+
+  private async fetchReservation({
+    id,
+    customerId,
+  }: {
+    id: number;
+    customerId: number;
+  }) {
+    const reservation = await this.reservationRepository.findOne({
+      where: { id, customer: { id: customerId } },
+      relations: ['restaurant', 'menus', 'customer'],
+    });
+    if (!reservation) {
+      throw new NotFoundException('예약 내역이 존재하지 않습니다.');
+    }
+
+    return reservation;
   }
 }
