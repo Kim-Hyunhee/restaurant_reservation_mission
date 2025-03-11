@@ -13,4 +13,7 @@ export const typeOrmConfig = (
   url: configService.get<string>('DATABASE_URL'),
   entities: [Restaurant, Customer, Menu, Reservation],
   synchronize: true,
+  ssl: {
+    rejectUnauthorized: false, // 자가 서명 인증서 우회
+  },
 });
