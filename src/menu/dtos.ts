@@ -72,7 +72,6 @@ export class GetMenuDto {
     description: '최대 가격',
     example: '1000000',
     required: false,
-    type: Number,
   })
   maxPrice?: number;
 }
