@@ -15,6 +15,7 @@ import { GetMenuDto, MenuDto } from './dtos';
 import { GetMenuForm, MenuForm } from './forms';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { validateRole } from 'src/util/valider';
 
 @Controller('menu')
 @ApiTags('menu')
@@ -27,6 +28,9 @@ export class MenuController {
   async postMenu(@Body() data: MenuDto, @Request() req) {
     const restaurantId = req.user.sub;
     const { name, price, category, description }: MenuForm = data;
+
+    // role이 restaurant인 경우만 허용
+    validateRole(req.user.role, 'restaurant');
 
     await this.menuService.createMenu({
       name,
@@ -42,8 +46,10 @@ export class MenuController {
   @Get()
   async getManyMenu(@Query() query: GetMenuDto, @Request() req) {
     const restaurantId = req.user.sub;
-
     const { name, minPrice, maxPrice }: GetMenuForm = query;
+
+    // role이 restaurant인 경우만 허용
+    validateRole(req.user.role, 'restaurant');
 
     return await this.menuService.findManyMenu({
       name,
@@ -56,6 +62,8 @@ export class MenuController {
   @Delete(':id')
   async deleteMenu(@Param('id', ParseIntPipe) id: number, @Request() req) {
     const restaurantId = req.user.sub;
+    // role이 restaurant인 경우만 허용
+    validateRole(req.user.role, 'restaurant');
 
     return await this.menuService.removeMenu({ restaurantId, id });
   }

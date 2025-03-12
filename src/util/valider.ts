@@ -1,6 +1,7 @@
 // 각종 유틸리티 함수 관련 공유 코드 (ex. 검증 로직)
 import * as bcrypt from 'bcrypt';
 import { EXCEPTIONS } from './responses';
+import { UnauthorizedException } from '@nestjs/common';
 
 /**
  * 비밀번호 확인 함수
@@ -58,3 +59,22 @@ export function validateDateTime(
     );
   }
 }
+
+/**
+ * 권한이 있는지 검증하는 함수
+ *
+ * @param role - 사용자의 role
+ * @param allowedRole - 권한이 있는 role
+ * @returns void
+ * @throws 예외를 던짐
+ */
+
+export const validateRole = (role: string, allowedRole: string) => {
+  if (role !== allowedRole) {
+    throw new UnauthorizedException(
+      `권한이 없습니다. (${allowedRole}만 접근 가능합니다.)`,
+    );
+  }
+
+  return true;
+};

@@ -24,6 +24,7 @@ import {
   FetchReservationForm,
   ModifyReservationForm,
 } from './forms';
+import { validateRole } from 'src/util/valider';
 
 @Controller('reservation')
 @ApiTags('reservation')
@@ -44,6 +45,9 @@ export class ReservationController {
       guests,
       menu,
     }: CreateReservationForm = data;
+
+    // role이 customer인 경우만 허용
+    validateRole(req.user.role, 'customer');
 
     return await this.reservationService.createReservation({
       customerId,
@@ -87,6 +91,9 @@ export class ReservationController {
     const customerId = req.user.sub;
     const { guests, menu }: ModifyReservationForm = query;
 
+    // role이 customer인 경우만 허용
+    validateRole(req.user.role, 'customer');
+
     return await this.reservationService.modifyReservation({
       id,
       customerId,
@@ -101,6 +108,9 @@ export class ReservationController {
     @Request() req,
   ) {
     const customerId = req.user.sub;
+
+    // role이 customer인 경우만 허용
+    validateRole(req.user.role, 'customer');
 
     return await this.reservationService.removeReservation({
       id,
