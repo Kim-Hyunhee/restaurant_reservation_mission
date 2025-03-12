@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Restaurant } from 'src/entity/table1.entity';
+import { EXCEPTIONS } from 'src/util/responses';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -16,7 +17,7 @@ export class RestaurantService {
     });
 
     if (!restaurant) {
-      throw new NotFoundException('해당 식당을 찾을 수 없습니다.');
+      throw EXCEPTIONS.entityNotFound('Restaurant');
     }
 
     return restaurant;

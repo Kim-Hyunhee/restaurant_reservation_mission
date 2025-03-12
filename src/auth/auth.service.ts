@@ -6,7 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Customer } from 'src/entity/table2.entity';
 import { generateJwtToken } from '../util/utilFunction';
 import { comparePasswords } from '../util/valider';
-import { EXCEPTIONS, RESPONSE_MESSAGES } from 'src/util/responses';
+import { EXCEPTIONS, RESPONSES, SUCCESS } from 'src/util/responses';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -53,7 +53,8 @@ export class AuthService {
         this.configService,
         payload,
       ),
-      message: RESPONSE_MESSAGES.loginSuccess,
+      statusCode: SUCCESS.login.statusCode,
+      message: SUCCESS.login.message,
     };
   }
 
@@ -90,7 +91,8 @@ export class AuthService {
         this.configService,
         payload,
       ),
-      message: RESPONSE_MESSAGES.loginSuccess,
+      statusCode: SUCCESS.login.statusCode,
+      message: SUCCESS.login.message,
     };
   }
 }
